@@ -2,15 +2,24 @@ import { Tag } from "../components/tag";
 import styles from "./movie.module.css";
 import { Header } from "../components/header";
 import { MovieCard } from "../components/movie-card";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { datas } from "../../datas/movies";
+import axios from "axios";
 
 export function MoviePage() {
   let { movieId } = useParams();
 
-  const [movie, setMovie] = useState(datas[0]);
+  const [movie, setMovie] = useState(null);
   const [relatedMovies, setRelatedMovies] = useState(datas[0].relatedMovies);
+
+  useEffect(() => {
+    if (movieId) {
+      axios.get("http://localhost:3200/api/movies/" + movieId).then((res) => {
+        setMovie(res.data);
+      });
+    }
+  }, [movieId]);
 
   if (!movie) {
     return (
